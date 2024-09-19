@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      # Переменные вынесены в файл .env, чтобы здесь их не указывать
+      MYSQL_DATABASE: "{mysql_database}"
+      MYSQL_USER: "{mysql_user}"
+      MYSQL_PASSWORD: "{mysql_password}"
+      MYSQL_ROOT_PASSWORD: "{mysql_root_password}"
+    ports:
+      # <Port exposed> : < MySQL Port running inside container>
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+
+
+# Names our volume
+volumes:
+  my-db:
