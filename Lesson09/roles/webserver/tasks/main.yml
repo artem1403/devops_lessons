@@ -1,0 +1,23 @@
+# roles/webserver/tasks/main.yml
+---
+- name: install packages
+  apt: name={{item}} state=present
+  become: yes
+  with_items:
+    - tomcat9
+  when: ansible_facts['os_family']|lower == 'debian'
+
+- name: install packages
+  yum: name={{item}} state=present
+  become: yes
+  with_items:
+    - tomcat9
+  when: ansible_facts['os_family']|lower == 'redhat'
+
+- name: deploy .war-file to web-production servers
+  copy:
+    src: '{{ war_src_on_master_vm }}'
+    dest: '{{ webapps_home }}'
+    mode: u+rw,g+rwx,o+rwx
+  notify:
+    - restart tomcat

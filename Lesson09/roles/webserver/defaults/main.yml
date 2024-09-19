@@ -1,0 +1,4 @@
+# roles/webserver/defaults/main.yml
+---
+webapps_home: /var/lib/tomcat9/webapps/
+war_src_on_master_vm: /usr/bin/boxfuse/hello-1.0.war

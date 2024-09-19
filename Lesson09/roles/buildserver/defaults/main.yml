@@ -1,0 +1,6 @@
+# roles/buildserver/defaults/main.yml
+---
+git_repo_url: "https://github.com/boxfuse/boxfuse-sample-java-war-hello.git"
+git_repo_dest: /usr/src/boxfuse
+war_file_path: /usr/src/boxfuse/target/hello-1.0.war
+war_dest_in_master_vm: /usr/bin/boxfuse/

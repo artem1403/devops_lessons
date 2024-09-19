@@ -1,0 +1,9 @@
+---
+- hosts: build
+  roles:
+    - buildserver
+
+- hosts: web-production
+  roles:
+    - webserver
+    
