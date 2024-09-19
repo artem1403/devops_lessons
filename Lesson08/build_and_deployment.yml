@@ -1,0 +1,69 @@
+---
+- name: install openjdk and maven
+  hosts: build
+  become: yes
+
+  tasks:
+  - name: Update repositories cache and install "default-jdk" package
+    apt:
+      name: default-jdk
+      update_cache: yes
+
+  - name: Update repositories cache and install "maven" package
+    apt:
+      name: maven
+      update_cache: yes
+
+
+- name: install tomcat
+  hosts: web-production
+  become: yes
+
+  tasks:
+  - name: Update repositories cache and install "tomcat9" package
+    apt:
+      name: tomcat9
+      update_cache: yes
+
+
+- name: clone and package project "boxfuse-sample-java-war-hello"
+  hosts: build
+  become: no
+
+  tasks:
+  - name: git clone project
+    git:
+      repo: https://github.com/boxfuse/boxfuse-sample-java-war-hello.git
+      dest: /usr/src/boxfuse
+      clone: yes
+
+  - name: Running mvn clean
+    shell: "cd /usr/src/boxfuse/ &&  mvn clean install"
+    become: yes
+    register: mvn_result
+
+  - name: "mvn clean task output"
+    debug:
+      var: mvn_result
+
+  - name: get .war-file from bulid-machine to master-machine
+    fetch:
+      src: /usr/src/boxfuse/target/hello-1.0.war
+      dest: /usr/bin/boxfuse/
+      flat: yes
+
+- name: deploying app to production servers
+  hosts: web-production
+  become: no
+
+  tasks:
+  - name: copying .war-file to web-production servers
+    copy:
+      src: /usr/bin/boxfuse/hello-1.0.war
+      dest: /usr/local/tomcat/webapps/
+      mode: u+rw,g+rwx,o+rwx
+
+  - name: Ensure tomcat service is restarted
+    service:
+      name: tomcat9
+      state: restarted
