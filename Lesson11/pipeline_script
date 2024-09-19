@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+    
+    tools {
+        maven "my_maven"
+    }
+    
+    stages {
+        stage ('git') {
+            steps {
+                echo 'Вытягиваем исходники приложения'
+                git 'https://github.com/boxfuse/boxfuse-sample-java-war-hello'
+            }
+        }
+        
+        stage ('build') {
+            steps {
+                echo 'Начинаем собирать приложение'
+                sh 'mvn package'
+            }
+        }
+    }
+}
